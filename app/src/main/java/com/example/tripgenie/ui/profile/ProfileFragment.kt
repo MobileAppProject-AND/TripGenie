@@ -13,6 +13,7 @@ import com.example.tripgenie.data.model.Hobby
 import com.example.tripgenie.data.model.PreferredEnvironment
 import com.example.tripgenie.data.model.TravelPreferences
 import com.example.tripgenie.data.model.TravelPurpose
+import com.example.tripgenie.data.model.User
 import com.example.tripgenie.data.repository.UserRepository
 import com.example.tripgenie.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -21,6 +22,7 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var auth: FirebaseAuth
     private val userRepository = UserRepository()
+    private lateinit var user: User
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +31,22 @@ class ProfileFragment : Fragment() {
     ): View {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         auth = FirebaseAuth.getInstance()
+
+        // User 정보 초기화
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return binding.root
+        userRepository.getUser(userId)
+            .addOnSuccessListener { document ->
+                user = document.toObject(User::class.java) ?: return@addOnSuccessListener
+
+                // 사용자 정보 표시
+                binding.uid.text = user.uid
+                binding.name.text = user.basicInfo.name
+                binding.email.text = user.email
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "쿼리를 위한 유저 정보 조회 실패", Toast.LENGTH_SHORT).show()
+                user = User()
+            }
 
         return binding.root
     }
