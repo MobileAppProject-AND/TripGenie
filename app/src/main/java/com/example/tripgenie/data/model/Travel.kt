@@ -1,5 +1,9 @@
 package com.example.tripgenie.data.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Travel(
     val country: String = "", // 국가
     val city: String = "", // 도시
@@ -10,4 +14,4 @@ data class Travel(
     val minDate: String = "", // 여행일자 최소
     val maxDate: String = "", // 여행일자 최대
     val price: Int = 0 // 가격
-)
+) : Parcelable
