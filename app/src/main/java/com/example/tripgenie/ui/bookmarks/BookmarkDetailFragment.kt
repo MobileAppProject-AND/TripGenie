@@ -38,13 +38,18 @@ class BookmarkDetailFragment : Fragment() {
 
         // 버튼에 북마크 추가 이벤트 추가
         binding.addBookmarkButton.setOnClickListener {
-            addBookmark(travel)
+            addTravelToBookmarkList(travel)
+        }
+
+        // 버튼에 북마크 삭제 이벤트 추가
+        binding.deleteBookmarkButton.setOnClickListener {
+            removeTravelFromBookmarkList(travel)
         }
 
         return binding.root
     }
 
-    private fun addBookmark(travel: Travel) {
+    private fun addTravelToBookmarkList(travel: Travel) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
 
@@ -54,6 +59,20 @@ class BookmarkDetailFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "북마크 추가 실패: ${e.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+    }
+
+    private fun removeTravelFromBookmarkList(travel: Travel) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+
+        userRepository.removeBookmarkedTravel(userId, travel.id)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "북마크가 삭제되었습니다..", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "북마크 삭제 실패: ${e.message}", Toast.LENGTH_SHORT)
                     .show()
             }
     }
