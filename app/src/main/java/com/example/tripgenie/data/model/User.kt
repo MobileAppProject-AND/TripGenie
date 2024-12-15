@@ -5,7 +5,7 @@ data class User(
     val email: String = "", // Google 계정 이메일
     var basicInfo: BasicInfo = BasicInfo(),
     var travelPreferences: TravelPreferences = TravelPreferences(),
-    var bookmarkedCities: MutableList<String> = mutableListOf()
+    var bookmarkedTravels: MutableList<String> = mutableListOf()
 )
 
 data class BasicInfo(
