@@ -5,6 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Travel(
+    val id: String = "", // object ID
     val country: String = "", // 국가
     val city: String = "", // 도시
     val rating: Float = 0f, // 평점
