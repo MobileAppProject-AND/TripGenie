@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tripgenie.LoginActivity
 import com.example.tripgenie.databinding.ActivityMainBinding
-import com.example.tripgenie.ui.bookmarks.BookmarksFragment
+import com.example.tripgenie.ui.bookmarks.BookmarkListFragment
 import com.example.tripgenie.ui.profile.ProfileFragment
 import com.example.tripgenie.ui.search.SearchFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.navigation_bookmarks -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, BookmarksFragment())
+                        .replace(R.id.fragment_container, BookmarkListFragment())
                         .commit()
                     true
                 }
