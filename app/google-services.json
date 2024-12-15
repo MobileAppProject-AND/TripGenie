@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "518476842245",
+    "project_id": "tripgenie-3b5f9",
+    "storage_bucket": "tripgenie-3b5f9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518476842245:android:dc6c25fb2600ec976a636c",
+        "android_client_info": {
+          "package_name": "com.example.tripgenie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrJ9rwNC3U-bcNNUP1yfKHOPe3rf4I-rE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
