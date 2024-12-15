@@ -68,15 +68,5 @@ class ProfileFragment : Fragment() {
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "업데이트 실패: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-
-        // 북마크 추가
-        userRepository.addBookmarkedCity(userId, "travel123")
-            .addOnSuccessListener {
-                Toast.makeText(requireContext(), "북마크가 추가되었습니다.", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "북마크 추가 실패: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
-            }
     }
 }
