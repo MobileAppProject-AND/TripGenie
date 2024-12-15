@@ -59,4 +59,5 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 }
