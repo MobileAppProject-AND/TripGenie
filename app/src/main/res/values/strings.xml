@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">TripGenie</string>
     <string name="default_web_client_id">518476842245-orqe937qenj14uj68kkmpb3n9nq50jo5.apps.googleusercontent.com</string>
+    <string name="gemini_api_key">AIzaSyBmJUKlC1sh2lixSxC5rLT4ZvS2oiYh_B0</string>
 </resources>
