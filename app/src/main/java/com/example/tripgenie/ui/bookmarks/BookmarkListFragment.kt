@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tripgenie.R
 import com.example.tripgenie.data.model.Travel
 import com.example.tripgenie.data.repository.UserRepository
@@ -37,7 +34,7 @@ class BookmarkListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         travelAdapter = TravelAdapter(emptyList()) { travel ->
-            goToTravelDetailFragment(travel)
+            goToBookmarkDetailFragment(travel)
         }
         binding.bookmarkRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.bookmarkRecyclerView.adapter = travelAdapter
@@ -63,7 +60,7 @@ class BookmarkListFragment : Fragment() {
             }
     }
 
-    private fun goToTravelDetailFragment(travel: Travel) {
+    private fun goToBookmarkDetailFragment(travel: Travel) {
         val fragment = BookmarkDetailFragment()
 
         // 여행 정보를 Fragment로 전달
@@ -79,38 +76,3 @@ class BookmarkListFragment : Fragment() {
     }
 }
 
-class TravelAdapter(
-    private var travelList: List<Travel>,
-    private val onDetailClick: (Travel) -> Unit
-) : RecyclerView.Adapter<TravelAdapter.TravelViewHolder>() {
-
-    inner class TravelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val travelId: TextView = itemView.findViewById(R.id.travel_id)
-        val travelCountry: TextView = itemView.findViewById(R.id.travel_country)
-        val travelCity: TextView = itemView.findViewById(R.id.travel_city)
-        val detailButton: Button = itemView.findViewById(R.id.go_to_detail_button)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TravelViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_travel, parent, false)
-        return TravelViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TravelViewHolder, position: Int) {
-        val travel = travelList[position]
-        holder.travelId.text = travel.id
-        holder.travelCountry.text = travel.country
-        holder.travelCity.text = travel.city
-
-        holder.detailButton.setOnClickListener {
-            onDetailClick(travel)
-        }
-    }
-
-    override fun getItemCount(): Int = travelList.size
-
-    fun updateData(newData: List<Travel>) {
-        travelList = newData
-        notifyDataSetChanged()
-    }
-}
