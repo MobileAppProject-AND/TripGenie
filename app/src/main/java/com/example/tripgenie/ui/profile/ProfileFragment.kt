@@ -37,9 +37,7 @@ class ProfileFragment : Fragment() {
         userRepository.getUser(userId)
             .addOnSuccessListener { document ->
                 user = document.toObject(User::class.java) ?: return@addOnSuccessListener
-
                 // 사용자 정보 표시
-                //binding.uid.text = user.uid
                 binding.name.text = user.basicInfo.name
                 binding.email.text = user.email
             }
@@ -48,10 +46,85 @@ class ProfileFragment : Fragment() {
                 user = User()
             }
 
+        // ✅프로필 정보
+        // 프로필 저장 버튼 리스너
+        binding.btnEditProfile.setOnClickListener {
+            updateProfile()
+        }
+        setupGenderSpinner()
+        setupGroupSizeSpinner()
+
+
+        // ✅여행 스타일
+        // 여행 스타일 저장 버튼 리스너
+        binding.btnEditTravelStyle.setOnClickListener {
+            updateTripStyle()
+        }
+        setupTravelPurposeSpinner()
+        setupPreferredEnvironmentSpinner()
+        setupPreferredActivitiesSpinner()
+        setupHobbiesSpinner()
+
         return binding.root
     }
 
+    // ✅프로필 정보
+    // 프로필 업데이트
+    private fun updateProfile() {
+        val userId = auth.currentUser?.uid ?: return
+
+        val basicInfo = BasicInfo().apply {
+            name = user.basicInfo?.name ?: "unknown"
+            age = user.basicInfo?.age ?: 0
+            gender = user.basicInfo?.gender ?: Gender.UNDISCLOSED
+            groupSize = 1
+        }
+        userRepository.updateUserBasicInfo(userId, basicInfo)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "프로필이 수정되었습니다!🥳", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "업데이트 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun setupGenderSpinner() { }
+    private fun setupGroupSizeSpinner() { }
+
+
+
     // TODO: UserRepository() 클래스를 사용하여 사용자 정보를 가져와서 화면에 표시 및 업데이트 @박보경
+
+
+    // 여행 스타일 업데이트
+    private fun updateTripStyle() {
+        val userId = auth.currentUser?.uid ?: return
+        val travelPreferences = TravelPreferences().apply {
+            travelPurpose = TravelPurpose.LEISURE
+            preferredEnvironment = PreferredEnvironment.BEACH
+            preferredActivities = ActivityType.SIGHTSEEING
+            hobbies = Hobby.PHOTOGRAPHY
+        }
+
+        userRepository.updateUserTravelPreferences(userId, travelPreferences)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "여행 스타일이 수정되었습니다!🥳", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "업데이트 실패: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+
+    }
+
+    // 여행 목적 스피너
+    private fun setupTravelPurposeSpinner() { }
+    // 선호하는 여행 환경 스피너
+    private fun setupPreferredEnvironmentSpinner() { }
+    // 선호하는 활동 스피너
+    private fun setupPreferredActivitiesSpinner() { }
+    // 취미 스피너
+    private fun setupHobbiesSpinner() { }
+
     private fun updateUserInfo() {
         val userId = auth.currentUser?.uid ?: return
 
