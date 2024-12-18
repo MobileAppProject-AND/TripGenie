@@ -43,6 +43,11 @@ class BookmarkDetailFragment : Fragment() {
                 handleBookmarkClick(travel)
             }
 
+            // 뒤로 가기
+            binding.backButton.setOnClickListener {
+                parentFragmentManager.popBackStack() // 이전 화면으로 이동
+            }
+
             return binding.root
         }
 
