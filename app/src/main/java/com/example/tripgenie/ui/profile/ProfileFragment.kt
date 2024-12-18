@@ -39,7 +39,7 @@ class ProfileFragment : Fragment() {
                 user = document.toObject(User::class.java) ?: return@addOnSuccessListener
 
                 // 사용자 정보 표시
-                binding.uid.text = user.uid
+                //binding.uid.text = user.uid
                 binding.name.text = user.basicInfo.name
                 binding.email.text = user.email
             }
