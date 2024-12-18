@@ -51,6 +51,10 @@ class ProfileFragment : Fragment() {
                 binding.email.text = user.email
                 binding.spinnerGender.setSelection(user.basicInfo.gender.ordinal)
                 binding.spinnerGroupSize.setSelection(user.basicInfo.groupSize - 1)
+                binding.spinnerTravelPurpose.setSelection(user.travelPreferences.travelPurpose.ordinal)
+                binding.spinnerPreferredEnvironment.setSelection(user.travelPreferences.preferredEnvironment.ordinal)
+                binding.spinnerPreferredActivity.setSelection(user.travelPreferences.preferredActivities.ordinal)
+                binding.spinnerHobby.setSelection(user.travelPreferences.hobbies.ordinal)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), "쿼리를 위한 유저 정보 조회 실패", Toast.LENGTH_SHORT).show()
