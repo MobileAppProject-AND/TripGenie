@@ -47,7 +47,7 @@ class ProfileFragment : Fragment() {
             .addOnSuccessListener { document ->
                 user = document.toObject(User::class.java) ?: return@addOnSuccessListener
                 // 사용자 정보 표시
-                binding.name.text = user.basicInfo.name
+                binding.nameEdit.setText(user.basicInfo.name)
                 binding.email.text = user.email
                 binding.spinnerGender.setSelection(user.basicInfo.gender.ordinal)
                 binding.spinnerGroupSize.setSelection(user.basicInfo.groupSize - 1)
@@ -80,9 +80,8 @@ class ProfileFragment : Fragment() {
     private fun updateProfile() {
         val userId = auth.currentUser?.uid ?: return
         val basicInfo = BasicInfo().apply {
-            name = user.basicInfo?.name ?: "unknown"
-            age = user.basicInfo?.age ?: 0
-            gender = selectedGender ?: Gender.UNDISCLOSED
+            name = binding.nameEdit.text.toString()
+            gender = selectedGender
             groupSize = selectedGroupSize
         }
         userRepository.updateUserBasicInfo(userId, basicInfo)
@@ -105,8 +104,6 @@ class ProfileFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedGender = Gender.values()[position]
             }
-
-    // TODO: UserRepository() 클래스를 사용하여 사용자 정보를 가져와서 화면에 표시 및 업데이트 @박보경
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
@@ -153,7 +150,6 @@ class ProfileFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedTravelPurpose = TravelPurpose.values()[position]
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
@@ -168,7 +164,6 @@ class ProfileFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedPreferredEnvironment = PreferredEnvironment.values()[position]
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
@@ -183,7 +178,6 @@ class ProfileFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedPreferredActivities = ActivityType.values()[position]
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
