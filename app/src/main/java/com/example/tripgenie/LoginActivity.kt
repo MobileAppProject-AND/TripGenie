@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.tripgenie.data.repository.UserRepository
 import com.example.tripgenie.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -12,12 +13,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -73,13 +77,52 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // 로그인 성공시 MainActivity로 이동
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                    val firebaseUser = auth.currentUser
+                    if (firebaseUser != null) {
+                        handleUserData(firebaseUser)
+                    }
                 } else {
                     Toast.makeText(this, "Authentication Failed.", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun handleUserData(firebaseUser: FirebaseUser) {
+        userRepository.getUser(firebaseUser.uid)
+            .addOnSuccessListener { document ->
+                if (!document.exists()) {
+                    // 새로운 사용자 생성
+                    val newUser = userRepository.createNewUser(
+                        uid = firebaseUser.uid,
+                        email = firebaseUser.email ?: "",
+                        displayName = firebaseUser.displayName ?: "-"
+                    )
+
+                    userRepository.saveUser(newUser)
+                        .addOnSuccessListener {
+                            Log.d("LoginActivity", "User data saved successfully")
+                            navigateToMainActivity()
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("LoginActivity", "Error saving user data", e)
+                            Toast.makeText(this, "Failed to save user data", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                } else {
+                    // 기존 사용자는 바로 메인으로 이동
+                    navigateToMainActivity()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.d("LoginActivity", "Auth User: ${auth.currentUser?.uid}")
+                Log.e("LoginActivity", "Error checking user existence", e)
+                Toast.makeText(this, "Failed to check user data", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun navigateToMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     companion object {
