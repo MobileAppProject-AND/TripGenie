@@ -15,7 +15,7 @@ class TravelAdapter(
 ) : RecyclerView.Adapter<TravelAdapter.TravelViewHolder>() {
 
     inner class TravelViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val travelId: TextView = itemView.findViewById(R.id.travel_id)
+//        val travelId: TextView = itemView.findViewById(R.id.travel_id)
         val travelCountry: TextView = itemView.findViewById(R.id.travel_country)
         val travelCity: TextView = itemView.findViewById(R.id.travel_city)
         val detailButton: Button = itemView.findViewById(R.id.go_to_detail_button)
@@ -28,7 +28,7 @@ class TravelAdapter(
 
     override fun onBindViewHolder(holder: TravelViewHolder, position: Int) {
         val travel = travelList[position]
-        holder.travelId.text = travel.id
+//        holder.travelId.text = travel.id
         holder.travelCountry.text = travel.country
         holder.travelCity.text = travel.city
 
