@@ -5,21 +5,46 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Title TextView -->
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TripGenie✈"
+            android:textSize="42sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Subtitle TextView -->
+        <TextView
+            android:id="@+id/subtitle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TripGenie로 나만의 맞춤형 여행 일정을 만들어보세요!"
+            android:textSize="27sp"
+            android:textStyle="italic"
+            android:textColor="@android:color/darker_gray"
+            android:gravity="center"
+            android:layout_marginBottom="36dp" />
+
+        <!-- Google Sign-In Button -->
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="300dp"
+            android:layout_height="48dp"
+            android:minWidth="300dp"
+            android:minHeight="48dp"
+            android:layout_marginTop="36dp" />
 
     </LinearLayout>
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-//test
