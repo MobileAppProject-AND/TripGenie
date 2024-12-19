@@ -14,8 +14,11 @@ import com.example.tripgenie.databinding.FragmentSearchResultDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class SearchResultDetailFragment : Fragment() {
-    private lateinit var binding: FragmentSearchResultDetailBinding
+    private var _binding: FragmentSearchResultDetailBinding? = null
+    private val binding get() = _binding!!
+
     private val userRepository = UserRepository()
+    private var isBookmarked = false // 북마크 상태
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreateView(
@@ -23,58 +26,97 @@ class SearchResultDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchResultDetailBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchResultDetailBinding.inflate(inflater, container, false)
 
-        // BookmarkListFragment 에서 전달받은 Travel 객체
         val travel =
             arguments?.getParcelable<Travel>("travel") ?: return binding.root
 
-        travel.let {
-            binding.country.text = it.country
-            binding.city.text = it.city
-            binding.rating.text = it.rating.toString()
-            binding.price.text = it.price.toString()
-            binding.description.text = it.description
+        // Travel 데이터를 UI에 표시
+        displayTravelData(travel)
+
+        // 초기 북마크 상태 확인
+        checkBookmarkStatus(travel)
+
+        // 북마크 버튼 이벤트 처리
+        binding.bookmarkButton.setOnClickListener {
+            handleBookmarkClick(travel)
         }
 
-        // 버튼에 북마크 추가 이벤트 추가
-        binding.addBookmarkButton.setOnClickListener {
-            addTravelToBookmarkList(travel)
-        }
-
-        // 버튼에 북마크 삭제 이벤트 추가
-        binding.deleteBookmarkButton.setOnClickListener {
-            removeTravelFromBookmarkList(travel)
+        // 뒤로 가기
+        binding.backButton.setOnClickListener {
+            parentFragmentManager.popBackStack() // 이전 화면으로 이동
         }
 
         return binding.root
     }
 
+    private fun displayTravelData(travel: Travel) {
+        binding.apply {
+            country.text = travel.country
+            city.text = travel.city
+            rating.text = travel.rating.toString()
+            price.text = travel.price.toString()
+            description.text = travel.description
+        }
+    }
+
+    private fun checkBookmarkStatus(travel: Travel) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        userRepository.getUser(userId).addOnSuccessListener { documentSnapshot ->
+            val bookmarkedTravelIds = documentSnapshot.get("bookmarkedTravels") as? List<String>
+            isBookmarked = bookmarkedTravelIds?.contains(travel.id) == true
+
+            // 북마크 버튼 텍스트 업데이트
+            updateBookmarkButtonUI()
+        }.addOnFailureListener { e ->
+            Toast.makeText(requireContext(), "북마크 상태를 확인할 수 없습니다: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun updateBookmarkButtonUI() {
+        binding.bookmarkButton.text =
+            if (isBookmarked) "북마크 삭제" else "북마크 추가"
+    }
+
+    private fun handleBookmarkClick(travel: Travel) {
+        if (isBookmarked) {
+            removeTravelFromBookmarkList(travel)
+        } else {
+            addTravelToBookmarkList(travel)
+        }
+    }
+
     private fun addTravelToBookmarkList(travel: Travel) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-
         userRepository.addBookmarkedTravel(userId, travel)
             .addOnSuccessListener {
+                isBookmarked = true
+                updateBookmarkButtonUI()
                 Toast.makeText(requireContext(), "북마크가 추가되었습니다.", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "북마크 추가 실패: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "북마크 추가 실패: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun removeTravelFromBookmarkList(travel: Travel) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-
         userRepository.removeBookmarkedTravel(userId, travel.id)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "북마크가 삭제되었습니다..", Toast.LENGTH_SHORT).show()
+                isBookmarked = false
+                updateBookmarkButtonUI()
+                Toast.makeText(requireContext(), "북마크가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "북마크 삭제 실패: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "북마크 삭제 실패: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
